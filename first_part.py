@@ -2,7 +2,7 @@ import colors
 import re
 
 dict_word = {}
-with open("slovar.txt", "r", encoding="utf-8") as file:
+with open("slovar_new.txt", "r", encoding="utf-8") as file:
     data = file.readlines()
     for words in data:
         if " — 1)" not in words and "1)" in words:
@@ -20,7 +20,7 @@ with open("slovar.txt", "r", encoding="utf-8") as file:
                 dict_word.setdefault(key_word, []).append(value_word_1)
                 dict_word.setdefault(key_word, []).append(value_word_2)
         elif "/" in words:
-            patt = re.compile("(/.{2,12}/|I.{2,12}J)")
+            patt = re.compile("(/.{1,12}/|I.{2,12}J)")
             word_list = re.split(patt, words, maxsplit=0)
             if len(word_list) > 2:
                 #print(word_list[1:])
@@ -44,24 +44,63 @@ if choose_language == "2":
     for keys in dict_word:
         if find_word == keys:
             value = " ".join(dict_word.get(keys))
-            # print(value)
             with colors.pretty_output(colors.FG_BLUE, colors.BOLD) as out:
                 out.write(find_word)
+            # print(value)
+            if len(dict_word.get(keys)) > 1:
+                for items in dict_word.get(keys):
+                    with colors.pretty_output(colors.FG_CYAN, colors.BOLD) as out:
+                        out.write(find_word)
+                    if "/" in items:
+                        sep_words = re.split(" — ", items, maxsplit=0)
+                        with colors.pretty_output(colors.BOLD) as out_1:
+                            out_1.write(sep_words[0])
+                            with colors.pretty_output(colors.BG_GREEN) as out_2:
+                                if ";" in sep_words[1]:
+                                    separ_words = sep_words[1].split(";")
+                                    out_2.write(separ_words[0])
+                                    out_2.write(separ_words[1])
+                                    pr_comp = " ".join(separ_words[2:])
+                                    if len(separ_words) > 2 and "ср." not in value:
+                                        out_2.write(pr_comp)
+                                    elif len(separ_words) > 2 and "ср." in value:
+                                        print(pr_comp.split("ср.")[0][1:])
+                                        print(separ_words[-1][1:])
+                                else:
+                                    out_2.write(sep_words[1])
+                    elif ';' in items:
+                        separ_words = items.split(";")
+                        with colors.pretty_output(colors.BG_GREEN) as out_1:
+                            out_1.write(separ_words[0])
+                            print(separ_words[1][1:])
+                            pr_comp = " ".join(separ_words[2:])
+                            if len(separ_words) > 2 and "ср." not in value:
+                                out_1.write(pr_comp)
+                            elif len(separ_words) > 2 and "ср." in value:
+                                print(pr_comp.split("ср.")[0][1:])
+                                print(separ_words[-1][1:])
+                    else:
+                        with colors.pretty_output(colors.BG_GREEN) as out_1:
+                            out_1.write(items)
+            else:
                 if "1)" in value:
                     if "/" in value:
                         sep_words = re.split(" — ", value, maxsplit=0)
                         with colors.pretty_output(colors.BOLD) as out_1:
                             out_1.write(sep_words[0])
                             with colors.pretty_output(colors.BG_GREEN) as out_2:
-                                separ_words = sep_words[1].split(";")
-                                out_2.write(separ_words[0])
-                                out_2.write(separ_words[1][1:])
-                                pr_comp = " ".join(separ_words[2:])
-                                if len(separ_words) > 2 and "ср." not in value:
-                                    out_2.write(pr_comp)
-                                elif len(separ_words) > 2 and "ср." in value:
-                                    print(pr_comp.split("ср.")[0][1:])
-                                    print(separ_words[-1][1:])
+                                if ";" in sep_words[1]:
+                                    separ_words = sep_words[1].split(";")
+                                    out_2.write(separ_words[0])
+                                    out_2.write(separ_words[1][1:])
+                                    pr_comp = " ".join(separ_words[2:])
+                                    if len(separ_words) > 2 and "ср." not in value:
+                                        out_2.write(pr_comp)
+                                    elif len(separ_words) > 2 and "ср." in value:
+                                        print(pr_comp.split("ср.")[0][1:])
+                                        print(separ_words[-1][1:])
+                                else:
+                                    out_2.write(sep_words[1][1:])
                     else:
                         separ_words = value.split(";")
                         with colors.pretty_output(colors.BG_GREEN) as out_1:
@@ -75,24 +114,26 @@ if choose_language == "2":
                                 print(separ_words[-1][1:])
                 elif "/" in value:
                     sep_words = re.split(" — ", value, maxsplit=0)
-                    with colors.pretty_output(colors.BOLD) as out_1:
-                        out_1.write(sep_words[0])
-                        if ";" in value:
-                            separ_words = sep_words[1].split(";")
-                            # print(separ_words)
-                            with colors.pretty_output(colors.BG_GREEN) as out_2:
-                                out_2.write(separ_words[0])
-                                if "ср." not in value:
-                                    for items in separ_words[1:]:
-                                        print(items[1:])
-                                else:
-                                    pr_comp = " ".join(separ_words[1:])
-                                    comp = pr_comp.split("ср.")
-                                    print(comp[0][1:])
-                                    print("ср." + comp[1][:-2])
-                        else:
-                            with colors.pretty_output(colors.BG_GREEN) as out_2:
-                                out_2.write(sep_words[1])
+                    if len(sep_words[0]) < 20:
+                        with colors.pretty_output(colors.BOLD) as out_1:
+                            out_1.write(sep_words[0])
+                            if ";" in value:
+                                separ_words = sep_words[1].split(";")
+                                # print(separ_words)
+                                with colors.pretty_output(colors.BG_GREEN) as out_2:
+                                    out_2.write(separ_words[0])
+                                    if "ср." not in value:
+                                        for items in separ_words[1:]:
+                                            print(items[1:])
+                                    else:
+                                        pr_comp = " ".join(separ_words[1:])
+                                        comp = pr_comp.split("ср.")
+                                        print(comp[0][1:])
+                                        print("ср." + comp[1][:-2])
+                            else:
+                                with colors.pretty_output(colors.BG_GREEN) as out_2:
+                                    out_2.write(sep_words[1])
+
                 elif ";" in value and "/" not in value:
                     separ_words = value.split(";")
                     # print(separ_words)
@@ -106,6 +147,8 @@ if choose_language == "2":
                             comp = pr_comp.split("ср.")
                             print(comp[0][1:])
                             print("ср." + comp[1][:-2])
+                elif ";" not in value and "/" not in value and "ср." in value:
+                    print(value)
                 else:
                     with colors.pretty_output(colors.BG_GREEN) as out_2:
                         out_2.write(value)
