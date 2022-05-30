@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for answer in answers %}
+
+    <b><p>{{ answer }}:</p></b>
+        {% for part in answers[answer].split(';') %}
+            <p>{{part}}</p>
+        {% endfor %}
+    <hr>
+
+{% endfor %}
+
+{% endblock %}
