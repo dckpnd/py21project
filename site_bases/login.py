@@ -27,7 +27,7 @@ def search_start():
     args = request.args
     if args['nm']:
         if search_begin(args['nm']):
-            return render_template('begin_results.html', answers=search_begin(args['nm']))
+            return render_template('login.html', answers=search_begin(args['nm']))
         else:
             return render_template('login.html', go_back = 'Вашего слова нет в словаре')
     else:
